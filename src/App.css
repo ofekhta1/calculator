@@ -1,0 +1,72 @@
+/* Container that centers the form */
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh; 
+  padding: 20px; /* Optional, for spacing */
+}
+
+.form-container {
+  /* background-color: white; */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%; /* 100% of the max-width */
+  max-width: 400px; /* Restrict width */
+  padding: 20px; /* Inner padding */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional, add shadow */
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  
+}
+
+
+.form-control,.datepicker { 
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  box-sizing: border-box; /* Important for consistent width */
+  
+}
+.datepicker{
+  width: 150%;
+ 
+}
+
+
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background-color: #006400;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.text-danger {
+  color: #ff3860;
+  margin-top: -15px;
+  margin-bottom: 15px;
+  font-size: 0.875em;
+}
+
+.thinking-cursor {
+  cursor: progress;
+}
