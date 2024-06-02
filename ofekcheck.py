@@ -41,13 +41,15 @@ CORS(app)  # Enable CORS for all domains
 @app.route('/query', methods=['POST'])
 def query():
     data = request.json
-    firstdate = data['firstdate']
-    lastdate = data['lastdate']
+    # monthlyinv = request.json.get('investpermonth')
+    firstdate = data['firstDate']
+    lastdate = data['lastDate']
     monthlyinv = data['investpermonth']
     from datetime import datetime
-    firstdate = datetime.strptime(firstdate, '%Y-%m-%d')
-    lastdate = datetime.strptime(lastdate, '%Y-%m-%d')
-
+    datetime_obj  = datetime.strptime(firstdate, '%Y-%m-%dT%H:%M:%S.%fZ')
+    firstdate  = datetime_obj.strftime('%d-%m-%Y')
+    datetime_obj  = datetime.strptime(lastdate, '%Y-%m-%dT%H:%M:%S.%fZ')
+    lastdate =  datetime_obj.strftime('%d-%m-%Y')
     # Call the add_numbers function and print the result
     result = sp500(firstdate, lastdate, monthlyinv)
     return jsonify({"answer": result})

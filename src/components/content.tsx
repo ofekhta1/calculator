@@ -1,45 +1,48 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
 
-const API_ENDPOINT = 'http://localhost:5000/query';
+const API_ENDPOINT = 'http://localhost:5000/query'; // Replace with your actual API endpoint
 
-const schema = z.object({
-  firstdate: z.date()
-    .min(new Date('1990-01-01'), { message: 'Date must be after January 1, 1990.' }),
-  lastdate: z.date()
-    .max(new Date(), { message: 'Date cannot be in the future.' }),
-  investpermonth: z.number(),
-  profit: z.number(),
-  profitpercent: z.number()
-});
-
-export type FormData = z.infer<typeof schema>;
-
-interface Props {
-  onSubmit: (data: FormData) => void;
+interface FormData {
+  investpermonth: string;
+  profit: string;
+  profitpercent: string;
 }
 
-const Quest: React.FC<Props> = ({ onSubmit }) => {
-  const [selectedfirstDate, setSelectedfirstDate] = useState<Date | null>(null);
-  const [selectedlastdate, setSelectedLastDate] = useState<Date | null>(null);
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema)
-  });
-  const [serverResponse, setServerResponse] = useState<string>('');
+const MyFormComponent: React.FC = () => {
+  const { register, handleSubmit, reset } = useForm<FormData>();
+  const [selectedFirstDate, setSelectedFirstDate] = useState<Date | null>(null);
+  const [selectedLastDate, setSelectedLastDate] = useState<Date | null>(null);
+  const [serverResponse, setServerResponse] = useState('');
 
   const submitForm = async (data: FormData) => {
-    console.log('Submitting:', data); // Log data on submission for debugging
     try {
-      const response = await axios.post(API_ENDPOINT, data);
+      const formData = new FormData();
+      formData.append('investpermonth', data.investpermonth);
+      formData.append('profit', data.profit);
+      formData.append('profitpercent', data.profitpercent);
+
+      if (selectedFirstDate) {
+        formData.append('firstDate', selectedFirstDate.toISOString());
+      }
+      if (selectedLastDate) {
+        formData.append('lastDate', selectedLastDate.toISOString());
+      }
+
+      const response = await axios.post(API_ENDPOINT, formData, {
+        headers: {
+          // 'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
+        },
+      });
+
       setServerResponse(response.data.answer);
-      reset(); // Optionally reset the form after successful submission
+      reset();
     } catch (error) {
-      console.error('Error submitting form:', error); // Log error if submission fails
+      console.error('Error submitting form:', error);
     }
   };
 
@@ -48,16 +51,16 @@ const Quest: React.FC<Props> = ({ onSubmit }) => {
       <div className="form-container">
         <label className="form-label" htmlFor="firstDatePicker">Choose a first date:</label>
         <DatePicker
-          selected={selectedfirstDate}
-          onChange={(date) => setSelectedfirstDate(date)}
+          selected={selectedFirstDate}
+          onChange={(date: Date | null) => setSelectedFirstDate(date)}
           id="firstDatePicker"
           className="datepicker"
         />
 
         <label className="form-label" htmlFor="lastDatePicker">Choose a last date:</label>
         <DatePicker
-          selected={selectedlastdate}
-          onChange={(date) => setSelectedLastDate(date)}
+          selected={selectedLastDate}
+          onChange={(date: Date | null) => setSelectedLastDate(date)}
           id="lastDatePicker"
           className="datepicker"
         />
@@ -78,4 +81,6 @@ const Quest: React.FC<Props> = ({ onSubmit }) => {
   );
 };
 
-export default Quest;
+export default MyFormComponent;
+
+
